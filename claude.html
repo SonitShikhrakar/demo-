@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Account</title>
+<style>
+  :root {
+    --ink: #1b1f23;
+    --paper: #fbfaf7;
+    --line: #dcd8cf;
+    --accent: #2f5d50;
+    --accent-soft: #e7efec;
+    --error: #b3261e;
+    --error-soft: #fbeceb;
+    --ok: #2f5d50;
+    --muted: #6b6f76;
+  }
+ 
+  * { box-sizing: border-box; }
+ 
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--paper);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 16px;
+  }
+ 
+  .card {
+    width: 100%;
+    max-width: 460px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 40px 36px 32px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+ 
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin: 0 0 8px;
+  }
+ 
+  h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 28px;
+    margin: 0 0 6px;
+    line-height: 1.2;
+  }
+ 
+  .sub {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0 0 28px;
+  }
+ 
+  .field {
+    margin-bottom: 20px;
+    position: relative;
+  }
+ 
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+ 
+  .required-mark { color: var(--error); }
+ 
+  input {
+    width: 100%;
+    padding: 11px 12px;
+    font-size: 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 3px;
+    background: #fff;
+    color: var(--ink);
+    transition: border-color 0.15s ease, background 0.15s ease;
+    font-family: inherit;
+  }
+ 
+  input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+ 
+  .field.valid input {
+    border-color: var(--ok);
+    background: var(--accent-soft);
+  }
+ 
+  .field.invalid input {
+    border-color: var(--error);
+    background: var(--error-soft);
+  }
+ 
+  .hint {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 5px;
+  }
+ 
+  .error-msg {
+    font-size: 12px;
+    color: var(--error);
+    margin-top: 5px;
+    display: none;
+    align-items: center;
+    gap: 5px;
+  }
+ 
+  .field.invalid .error-msg { display: flex; }
+  .field.invalid .hint { display: none; }
+ 
+  .status-icon {
+    position: absolute;
+    right: 12px;
+    top: 34px;
+    font-size: 14px;
+    display: none;
+  }
+ 
+  .field.valid .status-icon.ok { display: block; color: var(--ok); }
+  .field.invalid .status-icon.bad { display: block; color: var(--error); }
+ 
+  .password-strength {
+    display: flex;
+    gap: 4px;
+    margin-top: 8px;
+  }
+ 
+  .password-strength span {
+    height: 3px;
+    flex: 1;
+    background: var(--line);
+    border-radius: 2px;
+    transition: background 0.2s ease;
+  }
+ 
+  .checkbox-field {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+ 
+  .checkbox-field input {
+    width: auto;
+    margin-top: 3px;
+  }
+ 
+  .checkbox-field label {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--muted);
+    margin: 0;
+  }
+ 
+  button {
+    width: 100%;
+    padding: 13px;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+ 
+  button:hover { background: var(--accent); }
+  button:disabled { background: var(--line); cursor: not-allowed; }
+ 
+  .success-banner {
+    display: none;
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 14px 16px;
+    border-radius: 3px;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+ 
+  .success-banner.show { display: block; }
+</style>
+</head>
+<body>
+ 
+<div class="card">
+  <p class="eyebrow">Step 1 of 1</p>
+  <h1>Create your account</h1>
+  <p class="sub">All fields are required and checked as you type.</p>
+ 
+  <div class="success-banner" id="successBanner">Account created — all fields passed validation.</div>
+ 
+  <form id="signupForm" novalidate>
+ 
+    <div class="field" data-field="fullName">
+      <label for="fullName">Full name <span class="required-mark">*</span></label>
+      <input type="text" id="fullName" name="fullName" autocomplete="name" placeholder="Jane Doe">
+      <span class="status-icon ok">✓</span>
+      <span class="status-icon bad">✕</span>
+      <p class="hint">First and last name, letters only.</p>
+      <p class="error-msg">Enter at least two names (letters, spaces, or hyphens only).</p>
+    </div>
+ 
+    <div class="field" data-field="email">
+      <label for="email">Email address <span class="required-mark">*</span></label>
+      <input type="email" id="email" name="email" autocomplete="email" placeholder="jane@example.com">
+      <span class="status-icon ok">✓</span>
+      <span class="status-icon bad">✕</span>
+      <p class="hint">We'll send a confirmation link here.</p>
+      <p class="error-msg">Enter a valid email address, like name@example.com.</p>
+    </div>
+ 
+    <div class="field" data-field="phone">
+      <label for="phone">Phone number <span class="required-mark">*</span></label>
+      <input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="+1 (555) 123-4567">
+      <span class="status-icon ok">✓</span>
+      <span class="status-icon bad">✕</span>
+      <p class="hint">Include country code if outside the US.</p>
+      <p class="error-msg">Enter a valid phone number (7–15 digits).</p>
+    </div>
+ 
+    <div class="field" data-field="dob">
+      <label for="dob">Date of birth <span class="required-mark">*</span></label>
+      <input type="date" id="dob" name="dob">
+      <span class="status-icon ok">✓</span>
+      <span class="status-icon bad">✕</span>
+      <p class="hint">You must be at least 18 years old.</p>
+      <p class="error-msg">Enter a valid date — you must be 18 or older.</p>
+    </div>
+ 
+    <div class="field" data-field="username">
+      <label for="username">Username <span class="required-mark">*</span></label>
+      <input type="text" id="username" name="username" autocomplete="username" placeholder="janedoe">
+      <span class="status-icon ok">✓</span>
+      <span class="status-icon bad">✕</span>
+      <p class="hint">3–20 characters: letters, numbers, underscores.</p>
+      <p class="error-msg">Username must be 3–20 characters (letters, numbers, underscores only).</p>
+    </div>
+ 
+    <div class="field" data-field="password">
+      <label for="password">Password <span class="required-mark">*</span></label>
+      <input type="password" id="password" name="password" autocomplete="new-password" placeholder="At least 8 characters">
+      <span class="status-icon ok">✓</span>
+      <span class="status-icon bad">✕</span>
+      <div class="password-strength" id="strengthBars">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <p class="hint">Min. 8 characters, with a number and a capital letter.</p>
+      <p class="error-msg">Needs 8+ characters, one uppercase letter, and one number.</p>
+    </div>
+ 
+    <div class="field" data-field="confirmPassword">
+      <label for="confirmPassword">Confirm password <span class="required-mark">*</span></label>
+      <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="new-password" placeholder="Re-enter your password">
+      <span class="status-icon ok">✓</span>
+      <span class="status-icon bad">✕</span>
+      <p class="hint">Must match the password above.</p>
+      <p class="error-msg">Passwords do not match.</p>
+    </div>
+ 
+    <div class="field" data-field="website">
+      <label for="website">Website <span style="font-weight:400; color:var(--muted);">(optional)</span></label>
+      <input type="url" id="website" name="website" autocomplete="url" placeholder="https://example.com">
+      <span class="status-icon ok">✓</span>
+      <span class="status-icon bad">✕</span>
+      <p class="hint">Leave blank, or enter a full URL starting with http(s)://.</p>
+      <p class="error-msg">If provided, must be a valid URL starting with http:// or https://.</p>
+    </div>
+ 
+    <div class="checkbox-field">
+      <input type="checkbox" id="terms" name="terms">
+      <label for="terms">I agree to the Terms of Service and Privacy Policy.</label>
+    </div>
+    <p class="error-msg" id="termsError" style="display:none; margin-top:-14px; margin-bottom:20px;">You must accept the terms to continue.</p>
+ 
+    <button type="submit" id="submitBtn">Create account</button>
+  </form>
+</div>
+ 
+<script>
+(function () {
+  const form = document.getElementById('signupForm');
+  const successBanner = document.getElementById('successBanner');
+ 
+  const validators = {
+    fullName: (v) => /^[A-Za-z]+([ '-][A-Za-z]+)+$/.test(v.trim()),
+    email: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),
+    phone: (v) => /^\+?[0-9\s\-()]{7,17}$/.test(v.trim()) && v.replace(/\D/g, '').length >= 7 && v.replace(/\D/g, '').length <= 15,
+    dob: (v) => {
+      if (!v) return false;
+      const dob = new Date(v);
+      if (isNaN(dob.getTime())) return false;
+      const today = new Date();
+      let age = today.getFullYear() - dob.getFullYear();
+      const m = today.getMonth() - dob.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+      return age >= 18 && dob <= today;
+    },
+    username: (v) => /^[A-Za-z0-9_]{3,20}$/.test(v.trim()),
+    password: (v) => /^(?=.*[A-Z])(?=.*[0-9]).{8,}$/.test(v),
+    confirmPassword: (v) => v.length > 0 && v === document.getElementById('password').value,
+    website: (v) => v.trim() === '' || /^https?:\/\/[^\s]+\.[^\s]+$/.test(v.trim())
+  };
+ 
+  function validateField(name) {
+    const wrapper = document.querySelector(`[data-field="${name}"]`);
+    const input = document.getElementById(name);
+    const isValid = validators[name](input.value);
+ 
+    wrapper.classList.remove('valid', 'invalid');
+    if (input.value.trim() === '' && name === 'website') {
+      // optional field left blank counts as neutral/valid
+      wrapper.classList.add('valid');
+      return true;
+    }
+    wrapper.classList.add(isValid ? 'valid' : 'invalid');
+    return isValid;
+  }
+ 
+  function updateStrength() {
+    const val = document.getElementById('password').value;
+    const bars = document.querySelectorAll('#strengthBars span');
+    let score = 0;
+    if (val.length >= 8) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+ 
+    const colors = ['#b3261e', '#c9822f', '#c9822f', '#2f5d50'];
+    bars.forEach((bar, i) => {
+      bar.style.background = i < score ? colors[score - 1] : '#dcd8cf';
+    });
+  }
+ 
+  Object.keys(validators).forEach((name) => {
+    const input = document.getElementById(name);
+    input.addEventListener('input', () => {
+      validateField(name);
+      if (name === 'password') {
+        updateStrength();
+        // re-check confirm password whenever password changes
+        const confirmField = document.getElementById('confirmPassword');
+        if (confirmField.value) validateField('confirmPassword');
+      }
+    });
+    input.addEventListener('blur', () => validateField(name));
+  });
+ 
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    successBanner.classList.remove('show');
+ 
+    let allValid = true;
+    Object.keys(validators).forEach((name) => {
+      const ok = validateField(name);
+      if (!ok) allValid = false;
+    });
+ 
+    const termsChecked = document.getElementById('terms').checked;
+    const termsError = document.getElementById('termsError');
+    termsError.style.display = termsChecked ? 'none' : 'flex';
+    if (!termsChecked) allValid = false;
+ 
+    if (allValid) {
+      successBanner.classList.add('show');
+      form.reset();
+      document.querySelectorAll('.field').forEach(f => f.classList.remove('valid', 'invalid'));
+      document.querySelectorAll('#strengthBars span').forEach(s => s.style.background = '#dcd8cf');
+    } else {
+      const firstInvalid = document.querySelector('.field.invalid, .checkbox-field');
+      if (firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  });
+})();
+</script>
+ 
+</body>
+</html>
+ 
